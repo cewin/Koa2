@@ -1,0 +1,26 @@
+{
+  "name": "koa2",
+  "version": "1.0.0",
+  "description": "koa2 practice",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szy0syz/Koa2.git"
+  },
+  "keywords": [
+    "koa2"
+  ],
+  "author": "szy0syz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/szy0syz/Koa2/issues"
+  },
+  "homepage": "https://github.com/szy0syz/Koa2#readme",
+  "dependencies": {
+    "co": "^4.6.0",
+    "node-fetch": "^2.1.2"
+  }
+}
