@@ -1,12 +1,15 @@
 const Koa = require('koa')
 const app = new Koa()
+const pug = require('pug')
 
-
-const { normal } = require('./tpl')
+const { normal, pugTpl } = require('./tpl')
 
 app.use(async (ctx, next) => {
   ctx.type = 'text/html; charset=utf-8'
-  ctx.body = normal
+  ctx.body = pug.render(pugTpl, {
+    you: 'Tom',
+    me: 'Jerry'
+  })
 })
 
 app.listen(4455)
