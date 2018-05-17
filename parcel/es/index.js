@@ -10,7 +10,7 @@ class AppContainer extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ name: 'Parcel 打包了!!!' })
-    })
+    },1999)
   }
 
   render() {
@@ -23,5 +23,3 @@ render(
   <AppContainer />,
   document.getElementById('app')
 )
-
-// 看到5-8 16：01
