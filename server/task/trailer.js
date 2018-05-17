@@ -29,8 +29,6 @@ const { resolve } = require('path')
 
   // 获取消息
   child.on('message', data => {
-    console.log('~~~~~~~`')
     console.log(data)
-    console.log('~~~~~~~`')
   })
 })()

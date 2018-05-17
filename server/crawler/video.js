@@ -2,7 +2,7 @@
 const puppeteer = require('puppeteer')
 
 const base = `https://movie.douban.com/subject/`
-const doubanId = '24773958'
+const doubanId = '26887174'
 
 const sleep = time =>
   new Promise(resolve => {
@@ -30,7 +30,7 @@ const sleep = time =>
     // evaluate 在页面里执行JS脚本
     var $ = window.$
     var it = $('.related-pic-video')
-
+    console.dir(it)
     if (it && it.length > 0) {
       var link = it.attr('href')
       var cover = it.find('img').attr('src')
