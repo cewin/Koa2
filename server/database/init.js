@@ -1,8 +1,14 @@
 const mongoose = require('mongoose')
+const glob = require('glob')
+const { resolve } = require("path");
 // 使用node.js原生Promise替代mognoose内置的Promise
 mongoose.Promise = global.Promise
 
 const db = 'mongodb://localhost/douban-trailer'
+
+exports.initSchemas = () => {
+  glob.sync(resolve(__dirname, './schema', '**/*.js')).forEach(require)
+}
 
 exports.connect = () => {
   let maxConnectTimes = 0
