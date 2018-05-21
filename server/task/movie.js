@@ -1,5 +1,7 @@
 const cp = require('child_process')
 const { resolve } = require('path')
+const mognoose = require('mongoose')
+const Movie = mognoose.model('Movie')
 
 ~(async () => {
   // 拿到脚本
@@ -31,6 +33,21 @@ const { resolve } = require('path')
   child.on('message', data => {
     let result = data.result
 
-    console.log(result)
+    // console.log(result)
+
+    result.forEach(async item => {
+      let movie = await Movie.findOne({
+        doubanId: item.doubanId
+      })
+      console.log('movie~~~~~~~~~~',  movie)
+      if(!movie) {
+        console.log(item)
+        movie = new Movie(item)
+        console.log('^^^^^^^^^^^^^^^^^^^^^^')
+        console.dir(item)
+        console.log('^^^^^^^^^^^^^^^^^^^^^^')
+        await movie.save()
+      }
+    })
   })
 })()

@@ -27,7 +27,7 @@ const UserSchema = new Schema({
     required: true,
     default: 0
   },
-  meate: {
+  meta: {
     createdAt: {
       type: Date,
       default: Date.now()
@@ -41,6 +41,14 @@ const UserSchema = new Schema({
 
 UserSchema.virtual('isLocked').get(()=> {
   return !!(this.lockUntil && this.lockUntil > Date.now())  // 取两次反转boolean
+})
+
+UserSchema.pre('save', function(next) {
+  if(this.isNew) {
+    this.meta.createdAt = this.meta.updatedAt = Date.now()
+  } else {
+    this.meta.updatedAt = Date.now()
+  }
 })
 
 UserSchema.pre('save', next => {

@@ -15,7 +15,7 @@ const CategorySchema = new Schema({
     }
   ],
 
-  meate: {
+  meta: {
     createdAt: {
       type: Date,
       default: Date.now()
@@ -27,7 +27,7 @@ const CategorySchema = new Schema({
   }
 })
 
-CategorySchema.pre('save', next => {
+CategorySchema.pre('save', function(next) {
   if(this.isNew) {
     this.meta.createdAt = this.meta.updatedAt = Date.now()
   } else {

@@ -27,7 +27,7 @@ const MovieSchema = new Schema({
 
   tags: [String],
 
-  meate: {
+  meta: {
     createdAt: {
       type: Date,
       default: Date.now()
@@ -39,7 +39,7 @@ const MovieSchema = new Schema({
   }
 })
 
-MovieSchema.pre('save', next => {
+MovieSchema.pre('save', function(next) {
   if(this.isNew) {
     this.meta.createdAt = this.meta.updatedAt = Date.now()
   } else {
