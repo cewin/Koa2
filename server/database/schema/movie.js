@@ -3,7 +3,10 @@ const Schema = mongoose.Schema
 const Mixed = Schema.Types.Mixed  // Mixed 适用于数据类型和结构变化比较平凡的场景
 
 const MovieSchema = new Schema({
-  doubanId: String,
+  doubanId: {
+    unique: true,
+    type: String
+  },
   rate: Number,
   title: String,
   summary: String,
@@ -29,3 +32,13 @@ const MovieSchema = new Schema({
     }
   }
 })
+
+MovieSchema.pre('save', next => {
+  if(this.isNew) {
+    this.meta.createdAt = this.meta.updatedAt = Date.now()
+  } else {
+    this.meta.updatedAt = Date.now()
+  }
+})
+
+mongoose.model('Movie', MovieSchema)
