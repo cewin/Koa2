@@ -49,6 +49,8 @@ UserSchema.pre('save', function(next) {
   } else {
     this.meta.updatedAt = Date.now()
   }
+
+  next()
 })
 
 UserSchema.pre('save', next => {

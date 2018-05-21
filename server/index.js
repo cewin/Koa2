@@ -11,8 +11,8 @@ const mongoose = require('mongoose')
   // 加载所有schemas
   initSchemas()
   const Movie = mongoose.model('Movie')
+
   const rr = await Movie.find({})
-  console.log('~~movies: ', rr)
   require('./task/movie')
 })()
 

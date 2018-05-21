@@ -39,13 +39,10 @@ const Movie = mognoose.model('Movie')
       let movie = await Movie.findOne({
         doubanId: item.doubanId
       })
-      console.log('movie~~~~~~~~~~',  movie)
+
       if(!movie) {
-        console.log(item)
         movie = new Movie(item)
-        console.log('^^^^^^^^^^^^^^^^^^^^^^')
-        console.dir(item)
-        console.log('^^^^^^^^^^^^^^^^^^^^^^')
+        
         await movie.save()
       }
     })
