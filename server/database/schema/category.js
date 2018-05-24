@@ -27,14 +27,4 @@ const CategorySchema = new Schema({
   }
 })
 
-CategorySchema.pre('save', function(next) {
-  if(this.isNew) {
-    this.meta.createdAt = this.meta.updatedAt = Date.now()
-  } else {
-    this.meta.updatedAt = Date.now()
-  }
-
-  next()
-})
-
 mongoose.model('Category', CategorySchema)

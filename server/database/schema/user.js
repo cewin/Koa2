@@ -43,16 +43,6 @@ UserSchema.virtual('isLocked').get(()=> {
   return !!(this.lockUntil && this.lockUntil > Date.now())  // 取两次反转boolean
 })
 
-UserSchema.pre('save', function(next) {
-  if(this.isNew) {
-    this.meta.createdAt = this.meta.updatedAt = Date.now()
-  } else {
-    this.meta.updatedAt = Date.now()
-  }
-
-  next()
-})
-
 UserSchema.pre('save', next => {
   if(!this.isModified('password')) return next()
 
