@@ -10,10 +10,11 @@ const mongoose = require('mongoose')
   await connect()
   // 加载所有schemas
   initSchemas()
-  const Movie = mongoose.model('Movie')
 
-  const rr = await Movie.find({})
-  require('./task/movie')
+  // const Movie = mongoose.model('Movie')
+  // const rr = await Movie.find({})
+  // require('./task/movie')
+  require('./task/api')
 })()
 
 const app = new Koa();

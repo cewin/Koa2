@@ -3,6 +3,8 @@ const glob = require('glob')
 const { resolve } = require("path");
 // 使用node.js原生Promise替代mognoose内置的Promise
 mongoose.Promise = global.Promise
+// meta中间件: 记录创建日期和修改日期
+mongoose.plugin(require('./plugins/meta'))
 
 const db = 'mongodb://localhost/douban-trailer'
 

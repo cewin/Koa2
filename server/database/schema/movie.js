@@ -8,10 +8,10 @@ const MovieSchema = new Schema({
     type: String
   },
 
-  category: {
+  category: [{
     type: ObjectId,
     ref: 'Category'
-  },
+  }],
 
   rate: Number,
   title: String,
@@ -19,8 +19,13 @@ const MovieSchema = new Schema({
   video: String,
   poster: String,
   cover: String,
+  subtype: String,
 
   rawTile: String,
+  originalTitle: String,
+  year: String,
+  genres: [String],
+  countries: [String],
   movieTypes: [String],
   pubdate: Mixed,  // 值可能是单一值，也有可能是数据
   year: Number,
@@ -37,15 +42,6 @@ const MovieSchema = new Schema({
       default: Date.now()
     }
   }
-})
-
-MovieSchema.pre('save', function(next) {
-  if(this.isNew) {
-    this.meta.createdAt = this.meta.updatedAt = Date.now()
-  } else {
-    this.meta.updatedAt = Date.now()
-  }
-  next()
 })
 
 mongoose.model('Movie', MovieSchema)
