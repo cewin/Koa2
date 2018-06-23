@@ -40,11 +40,16 @@ async function fetchMovie(item) {
 
       movie.tags = movie.tags || []
       movie.title = movieData.alt_title || movieData.title || ''
-      movie.rawTitle = movieData.title || ''
+      movie.originalTitle = movieData.original_title || ''
+      movie.year = movieData.year || 2500
+      movie.genres = movieData.genres || ''
+      movie.countries = movieData.countries || ''
+      movie.summary = movieData.summary || ''
+      movie.subtype = movieData.subtype || ''
 
       if (movieData.attrs) {
         movie.movieTypes = movieData.attrs.movie_type || []
-        movie.year = movieData.attrs.year[0] || 2500
+
         for (let i = 0; i < movie.movieTypes.length; i++) {
           let item = movie.movieTypes[i]
 
@@ -97,10 +102,12 @@ async function fetchMovie(item) {
         movie.pubdates = pubdates
       }
 
-      tags.forEach(tag => {
-        movie.tags.push(tag.name)
-      })
-      
+      if (tags) {
+        tags.forEach(tag => {
+          movie.tags.push(tag.name)
+        })
+      }
+
       console.log(movie)
       await movie.save()
     }

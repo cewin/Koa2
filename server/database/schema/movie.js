@@ -19,8 +19,13 @@ const MovieSchema = new Schema({
   video: String,
   poster: String,
   cover: String,
+  subtype: String,
 
   rawTile: String,
+  originalTitle: String,
+  year: String,
+  genres: [String],
+  countries: [String],
   movieTypes: [String],
   pubdate: Mixed,  // 值可能是单一值，也有可能是数据
   year: Number,
