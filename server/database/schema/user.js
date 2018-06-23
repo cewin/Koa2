@@ -39,21 +39,21 @@ const UserSchema = new Schema({
   }
 })
 
-UserSchema.virtual('isLocked').get(()=> {
+UserSchema.virtual('isLocked').get(function () {
   return !!(this.lockUntil && this.lockUntil > Date.now())  // 取两次反转boolean
 })
 
-UserSchema.pre('save', next => {
-  if(!this.isModified('password')) return next()
+UserSchema.pre('save', function (next) {
+  if (!this.isModified('password')) return next()
 
   // 使用第三方库构建盐
   bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
     // 如果构建盐失败返回
-    if(err) return next(err)
+    if (err) return next(err)
     // 尝试用盐加密
     bcrypt.hash(this.password, salt, (error, hash) => {
       // 加密失败抛出去
-      if(error) return next(err)
+      if (error) return next(err)
 
       this.password = hash
       // 交出控制权
@@ -67,7 +67,7 @@ UserSchema.methods = {
   comparePassword: (_password, password) => {
     return new Promise((resolve, reject) => {
       bcrypt.comparePassword(_password, password, (err, isMatch) => {
-        if(!err) resolve(isMatch)
+        if (!err) resolve(isMatch)
         else reject(err)
       })
     })
@@ -75,7 +75,7 @@ UserSchema.methods = {
 
   incLoginAttempts: (user) => {
     return new Promise((resolve, reject) => {
-      if(this.lockUntil && this.lockUntil < Date.now()) {
+      if (this.lockUntil && this.lockUntil < Date.now()) {
         this.update({
           $set: {  // 原来mongoose的$set+$unset就是个原子操作
             loginAttempts: 1
@@ -84,7 +84,7 @@ UserSchema.methods = {
             lockUntil: 1
           }
         }, (err) => {
-          if(!err) resolve(true)
+          if (!err) resolve(true)
           else reject(err)
         })
       } else {
@@ -94,14 +94,14 @@ UserSchema.methods = {
           }
         }
 
-        if(this.loginAttempts + 1 >= MAX_LOGIN_ATTEMPTS && !this.isLockde) {
+        if (this.loginAttempts + 1 >= MAX_LOGIN_ATTEMPTS && !this.isLockde) {
           updates.$set = {
             lockUntil: Date.now() + LOCK_TIME
           }
         }
 
         this.update(updates, err => {
-          if(!err) resolve(true)
+          if (!err) resolve(true)
           else reject(err)
         })
       }

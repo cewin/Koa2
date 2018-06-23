@@ -1,13 +1,21 @@
 const rp = require('request-promise-native')
 const mongoose = require('mongoose')
 const Movie = mongoose.model('Movie')
+const Category = mongoose.model('Category')
 
-async function fetchMovie (item) {
+async function fetchMovie(item) {
   // http://api.douban.com/v2/movie/subject/24773958
   const url = `http://api.douban.com/v2/movie/subject/${item.doubanId}`
   const res = await rp(url)
+  let body
 
-  const res
+  try {
+    body = JSON.parse(res)
+  } catch (err) {
+    console.error(err)
+  }
+
+  return body
 }
 
 ~(async () => {
@@ -17,23 +25,29 @@ async function fetchMovie (item) {
       { summary: { $exists: false } }, // summary不存在
       { summary: null },
       { summary: '' },
+      { year: { $exists: false } },
       { title: '' }
     ]
   })
 
-  for (let i = 0; i < movies.length; i++) {
+  // [movies[0]] 测试，只跑一次API请求，节省
+  for (let i = 0; i < [movies[0]].length; i++) {
     let movie = movies[i]
     let movieData = await fetchMovie(movie)
 
     if (movieData) {
-      movie.tags = movieData.tags || []
+      let tags = movieData.tags || []
+
+      movie.tags = movie.tags || []
       movie.title = movieData.alt_title || movieData.title || ''
-      movie.rawTitle = movieData.rawTitle || movieData.title || ''
+      movie.rawTitle = movieData.title || ''
 
       if (movieData.attrs) {
         movie.movieTypes = movieData.attrs.movie_type || []
+        movie.year = movieData.attrs.year[0] || 2500
+        for (let i = 0; i < movie.movieTypes.length; i++) {
+          let item = movie.movieTypes[i]
 
-        movie.movieTypes.forEach(async item => {
           let cat = await Category.findOne({
             name: item
           })
@@ -49,22 +63,46 @@ async function fetchMovie (item) {
             }
           }
 
-          await cat.save() // cat is entiry  // 8-7   12:00
-        })
+          await cat.save()
+
+          if (!movie.category) {
+            movie.category.push(cat._id)
+          } else {
+            if (movie.category.indexOf(cat._id) === -1) {
+              movie.category.push(cat._id)
+            }
+          }
+        }
 
         let dates = movieData.attrs.pubdate || []
+        let pubdates = []
+
+        // 获取电影上映日期
+        dates.map(item => {
+          if (item && item.split('(').length > 0) {
+            let parts = item.split('(')
+            let date = parts[0]
+            let country = '未知'
+
+            if (parts[1]) {
+              country = parts[1].split(')')[0]
+            }
+
+            pubdates.push({
+              date: new Date(date),
+              country
+            })
+          }
+        })
+        movie.pubdates = pubdates
       }
 
+      tags.forEach(tag => {
+        movie.tags.push(tag.name)
+      })
+      
+      console.log(movie)
+      await movie.save()
     }
   }
-
-  movies.forEach(async movie => {
-    let movieData = await fetchMovie(movie)
-
-    try {
-      movieData = JSON.parse(movieData)
-    } catch (err) {
-      console.error(err)
-    }
-  })
 })()

@@ -45,6 +45,7 @@
     "qiniu": "^7.1.5",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
+    "request": "^2.87.0",
     "request-promise-native": "^1.0.5"
   },
   "devDependencies": {

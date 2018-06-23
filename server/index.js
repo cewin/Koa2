@@ -14,6 +14,7 @@ const mongoose = require('mongoose')
   // const Movie = mongoose.model('Movie')
   // const rr = await Movie.find({})
   // require('./task/movie')
+  require('./task/api')
 })()
 
 const app = new Koa();
