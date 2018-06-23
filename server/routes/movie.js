@@ -1,6 +1,10 @@
-const mongoose = require('mongoose')
+const { 
+  getAllMovies,
+  getMovieDetail,
+  getRelativeMoves
+} = require('../service/movie')
 
-const {controller, get} = require('../libs/decorator')
+const { controller, get } = require('../libs/decorator')
 
 @controller('/api/v0/movies')
 export class movieController {
@@ -9,10 +13,8 @@ export class movieController {
   @admin(['developer'])
   @log
   async getMovies(ctx, next) {
-    const Movie = mongoose.model('Movie')
-    const movies = await Movie.find({}).sort({
-      'meta.createAt': -1
-    })
+    const { type, year } = ctx.query
+    const movies = await getAllMovies(type, year)
 
     ctx.body = {
       movies
@@ -20,14 +22,17 @@ export class movieController {
   }
 
   @get('/:id')
-  async getMovieDetail(ctx, next) {
-    const Movie = mongoose.model('Movie')
-    const _id = ctx.params.id
-
-    const movie = await Movie.findOne({ _id })
+  async getMovie(ctx, next) {
+    const id = ctx.params.id
+    const movie = await getMovieDetail(id)
+    const relativeMovies = await getRelativeMoves(movie)
 
     ctx.body = {
-      movie
+      data: {
+        movie,
+        relativeMovies
+      },
+      success: true
     }
   }
 }
