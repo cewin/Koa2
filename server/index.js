@@ -21,10 +21,6 @@ const mongoose = require('mongoose')
 
 const app = new Koa()
 
-app
-  .use(Router.routes())
-  .use(Router.allowedMethods())
-
 app.use(
   views(resolve(__dirname, "./views"), {
     extension: "pug"

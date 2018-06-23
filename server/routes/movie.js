@@ -1,9 +1,6 @@
-import { logicalExpression } from 'babel-types';
-
-const Router = require('koa-router')
 const mongoose = require('mongoose')
 
-const router = new Router()
+const {controller, get} = require('../libs/decorator')
 
 @controller('/api/v0/movies')
 export class movieController {
@@ -34,5 +31,3 @@ export class movieController {
     }
   }
 }
-
-export default router
