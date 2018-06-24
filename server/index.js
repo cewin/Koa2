@@ -10,10 +10,7 @@ const useMiddlewares = (app) => {
   R.map(
     R.compose(
       R.forEachObjIndexed(
-        initWith => { // 相当于把加载出来的函数调用
-          console.log(initWith)
-          initWith(app)
-        }  
+        initWith => initWith(app)  // 相当于把加载出来的函数调用
       ),
       require,
       name => resolve(__dirname, `./middlewares/${name}`)
