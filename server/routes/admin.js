@@ -10,7 +10,7 @@ const { controller, get, post, auth, admin, required } = require('../lib/decorat
 
 @controller('/admin')
 export class adminController {
-  @post('/')
+  @post('/login')
   @required({
     body: ['email', 'password']
   })

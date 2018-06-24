@@ -80,21 +80,32 @@ export const all = path => router({
   path
 })
 
-const changeToArr = R.unless(
-  R.is(isArray),
-  R.of
-)
+const decorate = (args, middleware) => {
+  let [target, key, descriptor] = args
 
-const convert = middleware => (target, key, descriptor) => {
-  return (target, key, descriptor) => {
-    target[key] = R.compose(
-      R.concat(
-        changeToArr(middleware)
-      ),
-      changeToArr
-    )(target[key])
-  }
+  target[key] = isArray(target[key])
+  target[key].unshift(middleware)
+
+  return descriptor
 }
+
+const convert = middleware => (...args) => decorate(args, middleware)
+
+// const changeToArr = R.unless(
+//   R.is(isArray),
+//   R.of
+// )
+
+// const convert = middleware => (target, key, descriptor) => {
+//   return (target, key, descriptor) => {
+//     target[key] = R.compose(
+//       R.concat(
+//         changeToArr(middleware)
+//       ),
+//       changeToArr
+//     )(target[key])
+//   }
+// }
 
 export const auth = convert(async (ctx, next) => {
   console.log('进来auth装饰器了咩？')
@@ -104,13 +115,13 @@ export const auth = convert(async (ctx, next) => {
       code: 401,
       err: '登录失效，重新登录'
     })
-  } else {
-    await next()
   }
+
+  await next()
 })
 
 export const admin = roleExpected => convert(async (ctx, next) => {
-  const { role } = ctx.session.role
+  const { role } = ctx.session.user
   console.log('进来admin装饰器了咩？')
   // const rules = {
   //   admin: [1, 4, 5],
@@ -123,9 +134,9 @@ export const admin = roleExpected => convert(async (ctx, next) => {
       code: 403,
       err: '无权限'
     })
-  } else {
-    await next()
   }
+
+  await next()
 })
 
 export const required = rules => convert(async (ctx, next) => {
@@ -133,13 +144,22 @@ export const required = rules => convert(async (ctx, next) => {
 
   const checkRules = R.forEachObjIndexed(
     (value, key) => {
-      errors = R.filter(i => !R.has(i, ctx, request[key]))(value)
+      errors = R.filter(i => !R.has(i)(ctx.request[key]))(value)
     }
   )
 
   checkRules(rules)
 
-  if (errors.length) ctx.throw(412, `${errors.join('.')} is required`)
+  if (errors.length) {
+    return (
+      ctx.body = {
+        success: false,
+        code: 412,
+        err: `${errors.join(',')} is required`
+      }
+    )
+  }
 
   await next()
 })
+
