@@ -1,34 +1,34 @@
 const Koa = require("koa")
-const pug = require("pug")
-const views = require("koa-views")
 const { resolve } = require("path")
+const R = require('ramda')
+
 const { connect, initSchemas } = require("./database/init")
 
-const mongoose = require('mongoose')
+const MIDDLEWARES = ['router']
+
+const useMiddlewares = (app) => {
+  R.map(
+    R.compose(
+      R.forEachObjIndexed(
+        initWith => initWith(app)  // 相当于把加载出来的函数调用
+      ),
+      require,
+      name => resolve(__dirname, `./middlewares/${name}`)
+    )
+  )(MIDDLEWARES)
+}
 
 ~(async () => {
   await connect()
   // 加载所有schemas
-  initSchemas()
+  await initSchemas()
 
-  // const Movie = mongoose.model('Movie')
   // const rr = await Movie.find({})
   // require('./task/movie')
-  require('./task/api')
+  // require('./task/api')
+
+  const app = new Koa()
+  await useMiddlewares(app)
+
+  app.listen(4455)
 })()
-
-const app = new Koa();
-app.use(
-  views(resolve(__dirname, "./views"), {
-    extension: "pug"
-  })
-);
-
-app.use(async (ctx, next) => {
-  await ctx.render("index", {
-    you: "Tom",
-    me: "Jerry"
-  });
-});
-
-app.listen(4455);
