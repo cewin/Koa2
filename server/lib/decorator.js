@@ -1,7 +1,10 @@
+import { request } from 'http';
+
 const Router = require('koa-router')
 const { resolve } = require('path')
 const glob = require('glob')
 const _ = require('lodash')
+const R = require('ramda')
 
 const symbolPrefix = Symbol('prefix')
 const routeMap = new Map()
@@ -75,4 +78,68 @@ export const use = path => router({
 export const all = path => router({
   method: 'all',
   path
+})
+
+const changeToArr = R.unless(
+  R.is(isArray),
+  R.of
+)
+
+const convert = middleware => (target, key, descriptor) => {
+  return (target, key, descriptor) => {
+    target[key] = R.compose(
+      R.concat(
+        changeToArr(middleware)
+      ),
+      changeToArr
+    )(target[key])
+  }
+}
+
+export const auth = convert(async (ctx, next) => {
+  console.log('进来auth装饰器了咩？')
+  if (!!!ctx.session || !ctx.session.user) {
+    return (ctx.body = {
+      success: false,
+      code: 401,
+      err: '登录失效，重新登录'
+    })
+  } else {
+    await next()
+  }
+})
+
+export const admin = roleExpected => convert(async (ctx, next) => {
+  const { role } = ctx.session.role
+  console.log('进来admin装饰器了咩？')
+  // const rules = {
+  //   admin: [1, 4, 5],
+  //   superAdmin: [1, 2, 3, 4]
+  // }
+
+  if (!roel || role !== roleExpected) {
+    return (ctx.body = {
+      success: false,
+      code: 403,
+      err: '无权限'
+    })
+  } else {
+    await next()
+  }
+})
+
+export const required = rules => convert(async (ctx, next) => {
+  let errors = []
+
+  const checkRules = R.forEachObjIndexed(
+    (value, key) => {
+      errors = R.filter(i => !R.has(i, ctx, request[key]))(value)
+    }
+  )
+
+  checkRules(rules)
+
+  if (errors.length) ctx.throw(412, `${errors.join('.')} is required`)
+
+  await next()
 })

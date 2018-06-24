@@ -4,7 +4,7 @@ const {
   getRelativeMoves
 } = require('../service/movie')
 
-const { controller, get } = require('../libs/decorator')
+const { controller, get } = require('../lib/decorator')
 
 @controller('/api/v0/movies')
 export class movieController {
