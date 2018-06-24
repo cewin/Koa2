@@ -27,7 +27,7 @@ export class Route {
       this.router[conf.method](routerPath, ...controllers)
     }
 
-    this.app.use(this.router.routes()).use(Router.allowedMethods())
+    this.app.use(this.router.routes()).use(this.router.allowedMethods())
   }
 }
 
