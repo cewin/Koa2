@@ -2,7 +2,7 @@ const Koa = require("koa")
 const { resolve } = require("path")
 const R = require('ramda')
 
-const { connect, initSchemas } = require("./database/init")
+const { connect, initSchemas, initAdmin } = require("./database/init")
 
 const MIDDLEWARES = ['router']
 
@@ -22,6 +22,9 @@ const useMiddlewares = (app) => {
   await connect()
   // 加载所有schemas
   await initSchemas()
+
+  // 创建默认管理员账号
+  await initAdmin()
 
   // const rr = await Movie.find({})
   // require('./task/movie')
