@@ -8,10 +8,10 @@ const { controller, get } = require('../libs/decorator')
 
 @controller('/api/v0/movies')
 export class movieController {
+  // @login
+  // @admin(['developer'])
+  // @log
   @get('/')
-  @login
-  @admin(['developer'])
-  @log
   async getMovies(ctx, next) {
     const { type, year } = ctx.query
     const movies = await getAllMovies(type, year)
