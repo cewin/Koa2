@@ -2,7 +2,7 @@ const {
   checkPassword
 } = require('../service/admin')
 
-const { controller, get } = require('../libs/decorator')
+const { controller, post } = require('../libs/decorator')
 
 @controller('/api/v0/user')
 export class userController {

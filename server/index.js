@@ -4,13 +4,16 @@ const R = require('ramda')
 
 const { connect, initSchemas, initAdmin } = require("./database/init")
 
-const MIDDLEWARES = ['router']
+const MIDDLEWARES = ['common' ,'router']
 
 const useMiddlewares = (app) => {
   R.map(
     R.compose(
       R.forEachObjIndexed(
-        initWith => initWith(app)  // 相当于把加载出来的函数调用
+        initWith => { // 相当于把加载出来的函数调用
+          console.log(initWith)
+          initWith(app)
+        }  
       ),
       require,
       name => resolve(__dirname, `./middlewares/${name}`)

@@ -12,7 +12,7 @@ export class movieController {
   // @admin(['developer'])
   // @log
   @get('/')
-  async getMovies(ctx, next) {
+  async getMovies(ctx) {
     const { type, year } = ctx.query
     const movies = await getAllMovies(type, year)
 
@@ -22,7 +22,7 @@ export class movieController {
   }
 
   @get('/:id')
-  async getMovie(ctx, next) {
+  async getMovie(ctx) {
     const id = ctx.params.id
     const movie = await getMovieDetail(id)
     const relativeMovies = await getRelativeMoves(movie)

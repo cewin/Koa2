@@ -21,13 +21,13 @@ exports.initAdmin = async () => {
   if (!user) {
     const user = new User({
       username: 'admin',
-      eamil: 'szy0syz@gmail.com',
+      email: 'szy0syz@gmail.com',
       password: 'lyp82nLF',
       role: 'admin'
     })
-  }
 
-  await user.save()
+    await user.save()
+  }
 }
 
 exports.connect = () => {
