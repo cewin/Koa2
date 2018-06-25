@@ -70,7 +70,7 @@ UserSchema.methods = {
   // _password为网站提交来的明文password，第二个就是数据库中加盐后的hash密码
   comparePassword: (_password, password) => {
     return new Promise((resolve, reject) => {
-      bcrypt.comparePassword(_password, password, (err, isMatch) => {
+      bcrypt.compare(_password, password, (err, isMatch) => {
         if (!err) resolve(isMatch)
         else reject(err)
       })

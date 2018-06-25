@@ -3,10 +3,11 @@ const {
 } = require('../service/admin')
 
 const { 
-  getAllMovies
+  getAllMovies,
+  findOneAndRemove
 } = require('../service/movie')
 
-const { controller, get, post, auth, admin, required } = require('../lib/decorator')
+const { controller, get, del, post, auth, admin, required } = require('../lib/decorator')
 
 @controller('/admin')
 export class adminController {
@@ -26,6 +27,13 @@ export class adminController {
     }
 
     if (matchData.match) {
+      ctx.session.user = {
+        _id: matchData.user._id,
+        email: matchData.user.email,
+        role: matchData.user.role,
+        username: matchData.user.username
+      }
+
       return (ctx.body = {
         success: true
       })
@@ -37,7 +45,7 @@ export class adminController {
     }
   }
 
-  @get('/movie/list')
+  @get('/movies')
   @auth
   @admin('admin')
   async getMoiveList(ctx) {
@@ -48,4 +56,22 @@ export class adminController {
       data: movies
     }
   }
+
+  @del('/movies')
+  @auth
+  @admin('admin')
+  @required({
+    query: ['id']
+  })
+  async delMoive(ctx) {
+    const id = ctx.query.id
+    await findOneAndRemove(id)
+    const movies = await getAllMovies()
+
+    ctx.body = {
+      success: true,
+      data: movies
+    }
+  }
+
 }
