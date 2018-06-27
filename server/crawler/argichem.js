@@ -1,5 +1,3 @@
-// 中国农药网
-
 const puppeteer = require('puppeteer')
 
 const url = `http://www.agrichem.cn/n/2018/05/09/092552899580.shtml`
