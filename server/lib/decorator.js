@@ -1,5 +1,3 @@
-import { request } from 'http';
-
 const Router = require('koa-router')
 const { resolve } = require('path')
 const glob = require('glob')
